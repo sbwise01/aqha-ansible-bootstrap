@@ -1,0 +1,5 @@
+---
+# Default variables for this role
+
+install_dir: '/opt/aqha-ansible-bootstrap'
+deploy_playbook: 'playbook-deploy.yml'
