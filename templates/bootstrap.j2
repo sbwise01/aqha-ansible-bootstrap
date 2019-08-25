@@ -19,11 +19,11 @@ BUCKET=`echo $RAW_USER_DATA | jq -r '.bucket'`
 KEY=`echo $RAW_USER_DATA | jq -r '.key'`
 
 # Get the item's content and save it to a file
-#aws s3 cp s3://$BUCKET/$KEY ./config.tar.gz
+aws s3 cp s3://$BUCKET/$KEY ./config.tar.gz
 
 #Unpack bootstrap configuration
-#tar zxvf config.tar.gz
+tar zxvf config.tar.gz
 
 #Run Ansible
 export ANSIBLE_ROLES_PATH="{{ install_dir }}/{{ ansible_roles_path }}"
-ansible-playbook --connection=local -i localhost, {{ deploy_playbook }}
+ansible-playbook --extra-vars "@variables.yml" --connection=local -i localhost, {{ deploy_playbook }}
