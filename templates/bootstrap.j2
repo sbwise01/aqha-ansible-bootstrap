@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Change directory to working dir
+cd {{ install_dir }}
+
+# Check if executed before
+EXECUTION_GATE_FILE="{{ install_dir }}/.executed"
+if [ -f $EXECUTION_GATE_FILE ]; then
+    echo "Previous executed ... exiting"
+    exit 1
+fi
+
+touch $EXECUTION_GATE_FILE
+
+#Fetch user data
+RAW_USER_DATA=`curl http://169.254.169.254/latest/user-data`
+#RAW_USER_DATA='{"bucket": "brad-ansible-bootstrap","key": "config.tar.gz"}'
+BUCKET=`echo $RAW_USER_DATA | jq -r '.bucket'`
+KEY=`echo $RAW_USER_DATA | jq -r '.key'`
+
+# Get the item's content and save it to a file
+#aws s3 cp s3://$BUCKET/$KEY ./config.tar.gz
+
+#Unpack bootstrap configuration
+#tar zxvf config.tar.gz
+
+#Run Ansible
+ansible-playbook --connection=local -i localhost, {{ deploy_playbook }}

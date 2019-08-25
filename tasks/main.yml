@@ -1,0 +1,57 @@
+---
+
+- hosts: all
+  become: true
+  become_user: root
+  become_method: sudo
+  vars:
+    install_dir: '/opt/aqha-ansible-bootstrap'
+    deploy_playbook: 'playbook-deploy.yml'
+
+  tasks:
+  - name: Confirm bootstrap packages are the latest
+    yum:
+      name: '{{ item }}'
+      state: latest
+    with_items:
+      - 'ansible'
+      - 'awscli'
+      - 'epel-release'
+
+  - name: Confirm jq package is the latest
+    yum:
+      name: jq
+      state: latest
+
+  - name: Create bootstrap directory
+    file:
+      path: '{{ item }}'
+      state: 'directory'
+      owner: 'root'
+      group: 'root'
+      mode: 0755
+      recurse: 'yes'
+    with_items:
+      - '{{ install_dir }}'
+
+  - name: Configure bootstrap.sh
+    template:
+      src: bootstrap.j2
+      dest: '{{ install_dir }}/bootstrap.sh'
+      owner: root
+      group: root
+      mode: 0775
+
+  - name: Configure SystemD Unit
+    template:
+      src: systemd-unit.j2
+      dest: /etc/systemd/system/aqha-ansible-bootstrap.service
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Enable aqha-ansible-bootstrap service
+    systemd:
+      name: aqha-ansible-bootstrap
+      enabled: yes
+      daemon_reload: yes
