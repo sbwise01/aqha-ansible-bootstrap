@@ -25,5 +25,5 @@ KEY=`echo $RAW_USER_DATA | jq -r '.key'`
 #tar zxvf config.tar.gz
 
 #Run Ansible
-export ANSIBLE_ROLES_PATH="{{ install_dir }}/.galaxy"
+export ANSIBLE_ROLES_PATH="{{ install_dir }}/{{ ansible_roles_path }}"
 ansible-playbook --connection=local -i localhost, {{ deploy_playbook }}
