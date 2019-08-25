@@ -2,12 +2,8 @@
 
 - name: Confirm bootstrap packages are the latest
   yum:
-    name: '{{ item }}'
+    name: ['ansible', 'awscli', 'epel-release']
     state: latest
-  with_items:
-    - 'ansible'
-    - 'awscli'
-    - 'epel-release'
 
 - name: Confirm jq package is the latest
   yum:
